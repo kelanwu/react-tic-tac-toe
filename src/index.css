@@ -32,6 +32,10 @@ ol, ul {
   width: 34px;
 }
 
+.square.highlight {
+  background: #ddd
+}
+
 .square:focus {
   outline: none;
 }
@@ -49,6 +53,7 @@ ol, ul {
   margin-left: 20px;
 }
 
-.move-list-selected-item{
+.move-list-item-selected{
+  float: left;
   font-weight: bold;
 }
