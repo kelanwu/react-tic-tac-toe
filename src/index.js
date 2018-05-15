@@ -14,6 +14,7 @@ class Board extends React.Component {
   renderSquare(i) {
     return (
       <Square
+        key={i}
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
       />
@@ -21,24 +22,19 @@ class Board extends React.Component {
   }
 
   render() {
+    // Use two loops to make the squares
+    const boardSize = 3;
+    let squares = [];
+    for(let i=0; i<boardSize; ++i) {
+      let row = [];
+      for(let j=0; j<boardSize; ++j) {
+        row.push(this.renderSquare(i * boardSize + j));
+      }
+      squares.push(<div key={i} className="board-row">{row}</div>);
+    }
+
     return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
+      <div>{squares}</div>
     );
   }
 }
@@ -69,6 +65,7 @@ class Game extends React.Component {
       history: history.concat([
         {
           squares: squares,
+          // Store the latest movement index
           latestMoveSquare: i
         }
       ]),
@@ -99,6 +96,7 @@ class Game extends React.Component {
         'Go to game start';
       return (
         <li key={move}>
+          {/* Bold the currently selected item */ }
           <button
             className={move === stepNumber ? 'move-list-selected-item' : ''}
             onClick={() => this.jumpTo(move)}>{desc}
