@@ -71,7 +71,7 @@ class Game extends React.Component {
       history: history.concat([
         {
           squares: squares,
-          // Store the latest movement index
+          // Store the index of the latest moved square
           latestMoveSquare: i
         }
       ]),

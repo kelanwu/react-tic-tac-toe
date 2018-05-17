@@ -17,7 +17,54 @@ npm start
 #+END_SRC
 
 * Follow-up tutorial
+Start with the official final result here: [[https://codepen.io/gaearon/pen/gWWZgR?editors=0010][Starter Code]].
+
 ** Display the location for each move
+We've used the =squares= array to store the board state of each step in class =Game=. We can count out the lastest moved square of each step by comparing the current squares element to the previous one. But we will avoid this by storing the index of the lastest moved square in each =history= element in the =handleClick= method: 
+
+#+BEGIN_SRC js
+  handleClick(i) {
+    // ...
+    this.setState({
+      history: history.concat([
+        {
+          squares: squares,
+          // Store the index of the latest moved square
+          latestMoveSquare: i
+        }
+      ]),
+    });
+    // ...
+  }
+#+END_SRC
+
+With the =lastestMoveSquare=, we can easily count cout the location of each move in the format (col, row) and append this format string to =desc=. Notice that we will use [[https://developer.mozilla.org/en-US/docs/Web][template string]] in the snippet, which is a feature from ES6:
+
+#+BEGIN_SRC js
+  render() {
+    const history = this.state.history;
+    const stepNumber = this.state.stepNumber;
+    const current = history[stepNumber];
+
+    const moves = history.map((step, move) => {
+      const latestMoveSquare = step.latestMoveSquare;
+      const col = 1 + latestMoveSquare % 3;
+      const row = 1 + Math.floor(latestMoveSquare / 3);
+      const desc = move ?
+        `Go to move #${move} (${col}, ${row})` :
+        'Go to game start';
+      return (
+        <li key={move}>
+          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+      );
+    });
+    // ...
+  }
+#+END_SRC
+
+Now if you run ~npm start~ in the project folder and open [[http://localhost:3000]] in the browser, you should see the location for each move in each button of the move history list except the =Go to game start=.   
+
 ** Bold the currently selected item
 ** Use two loops to make the squares
 ** Add a toggle button for sorting
