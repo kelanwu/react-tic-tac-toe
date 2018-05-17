@@ -1,4 +1,4 @@
-This project is my personal solution to the further practice of [[https://reactjs.org/tutorial/tutorial.html][React's tic-tac-toe tutorial]].
+This is my personal solution to the further practice of [[https://reactjs.org/tutorial/tutorial.html][React's tic-tac-toe tutorial]].
 
 Here are the improvements listed in order of increasing difficulty:
 1. [X] Display the location for each move in the format (col, row) in the move history list.
@@ -7,3 +7,19 @@ Here are the improvements listed in order of increasing difficulty:
 4. [X] Add a toggle button that lets you sort the moves in either ascending or descending order.
 5. [X] When someone wins, highlight the three squares that caused the win.
 6. [X] When no one wins, display a message about the result being a draw.
+
+* Usage
+#+BEGIN_SRC sh
+git clone https://github.com/kelanwu/react-tic-tac-toe.git
+cd react-tic-tac-toe
+npm install
+npm start
+#+END_SRC
+
+* Follow-up tutorial
+** Display the location for each move
+** Bold the currently selected item
+** Use two loops to make the squares
+** Add a toggle button for sorting
+** Highlight the squares when someone wins
+** Display draw message
