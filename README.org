@@ -38,7 +38,7 @@ We've used the =squares= array to store the board state of each step in class =G
   }
 #+END_SRC
 
-With the =lastestMoveSquare=, we can easily count cout the location of each move in the format (col, row) and append this format string to =desc=. Notice that we will use [[https://developer.mozilla.org/en-US/docs/Web][template string]] in the snippet, which is a feature from ES6:
+With the =lastestMoveSquare=, we can easily count out the location of each move in the format (col, row) and append this format string to =desc=. Notice that we will use [[https://developer.mozilla.org/en-US/docs/Web][template string]] in the snippet, which is a feature from ES6:
 
 #+BEGIN_SRC js
   render() {
@@ -66,7 +66,65 @@ With the =lastestMoveSquare=, we can easily count cout the location of each move
 Now if you run ~npm start~ in the project folder and open [[http://localhost:3000]] in the browser, you should see the location for each move in each button of the move history list except the =Go to game start=.   
 
 ** Bold the currently selected item
+Append this stype for bold item to your =src/index.css=:
+
+#+BEGIN_SRC css
+.move-list-item-selected{
+  float: left;
+  font-weight: bold;
+}
+#+END_SRC
+
+With a little change in the =render= method of =Game= class, we can achieve the goal. We will apply the =move-list-item-selected= class if ~move === stepNumber~, which means the item is selected:
+
+#+BEGIN_SRC js
+  render() {
+    // ...
+    const moves = history.map((step, move) => {
+      const latestMoveSquare = step.latestMoveSquare;
+      const col = 1 + latestMoveSquare % 3;
+      const row = 1 + Math.floor(latestMoveSquare / 3);
+      const desc = move ?
+        `Go to move #${move} (${col}, ${row})` :
+        'Go to game start';
+      return (
+        <li key={move}>
+          {/* Bold the currently selected item */ }
+          <button
+            className={move === stepNumber ? 'move-list-item-selected' : ''}
+            onClick={() => this.jumpTo(move)}>{desc}
+          </button>
+        </li>
+      );
+    });
+    // ...
+  }
+#+END_SRC
+
 ** Use two loops to make the squares
+The original implementation rendered the squares by hardcoding in class =Board=. We can do it better by using two loops:  
+
+#+BEGIN_SRC js
+render() {
+    // Use two loops to make the squares
+    const boardSize = 3;
+    let squares = [];
+    for(let i=0; i<boardSize; ++i) {
+      let row = [];
+      for(let j=0; j<boardSize; ++j) {
+        row.push(this.renderSquare(i * boardSize + j));
+      }
+      squares.push(<div key={i} className="board-row">{row}</div>);
+    }
+
+    return (
+      <div>{squares}</div>
+    );
+  }
+#+END_SRC
+
+Each step in the first loop, we create a board row. And each step in the second loop, we add a square to the row. 
+
 ** Add a toggle button for sorting
 ** Highlight the squares when someone wins
 ** Display draw message
