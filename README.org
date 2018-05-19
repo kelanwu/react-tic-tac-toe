@@ -66,7 +66,7 @@ With the =lastestMoveSquare=, we can easily count out the location of each move 
 Now if you run ~npm start~ in the project folder and open [[http://localhost:3000]] in the browser, you should see the location for each move in each button of the move history list except the =Go to game start=.   
 
 ** Bold the currently selected item
-Append this stype for bold item to your =src/index.css=:
+Append this stype for bold item to your =src/index.css= file:
 
 #+BEGIN_SRC css
 .move-list-item-selected{
@@ -102,7 +102,7 @@ With a little change in the =render= method of =Game= class, we can achieve the 
 #+END_SRC
 
 ** Use two loops to make the squares
-The original implementation rendered the squares by hardcoding in class =Board=. We can do it better by using two loops:  
+The original implementation of rendering the squares in class =Board= is hardcoded. We can do it better by using two loops:  
 
 #+BEGIN_SRC js
 render() {
@@ -126,5 +126,80 @@ render() {
 Each step in the first loop, we create a board row. And each step in the second loop, we add a square to the row. 
 
 ** Add a toggle button for sorting
+So far, the moves list is displayed in ascending order by default, from game start to the latest step. We need to enable the moves list to be displayed in descending order, from lastest step to game start, and add a toggle button to switch the sorting order. 
+At first, add =isAscending= state representing what order should be displayed to the constructor: 
+
+#+BEGIN_SRC js
+class Game extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // ...
+      isAscending: true
+    };
+  }
+  // ...
+}
+#+END_SRC
+
+Add the toggle button in =render= method in =Game=. It will have different content according to the =isAscending= state: 
+
+#+BEGIN_SRC js
+  render() {
+    // ...
+    const isAscending = this.state.isAscending;
+
+    return (
+      <div className="game">
+        <div className="game-board">
+          <Board
+            squares={current.squares}
+            onClick={i => this.handleClick(i)}
+          />
+        </div>
+        <div className="game-info">
+          <div>{status}</div>
+          <button onClick={() => this.handleSortToggle()}>
+            {isAscending ? 'descending' : 'ascending'}
+          </button>
+          <ol>{moves}</ol>
+        </div>
+      </div>
+    );
+  }
+#+END_SRC
+
+When the toggle button is clicked, =handleSortToggle= will be called. What this handler does is just flipping and saving the boolean state: 
+
+#+BEGIN_SRC js
+  handleSortToggle() {
+    this.setState({
+      isAscending: !this.state.isAscending
+    });
+  }
+#+END_SRC
+
+At last, the moves list should be displayed in the right order corresponding to the =isAscending= state. For ascending, the =moves= is in the right order. For descending, we reverse the =moves= array to have the right order. Note that we also change the definition of =moves= from =const= to =let= because we may change it:
+
+#+BEGIN_SRC js
+  render() {
+
+    let moves = history.map((step, move) => {
+      // ...
+    });
+    
+    // ...
+
+    const isAscending = this.state.isAscending;
+    if (!isAscending) {
+      moves.reverse();
+    }
+
+    return (
+      // ...
+    );
+  }
+#+END_SRC
+
 ** Highlight the squares when someone wins
 ** Display draw message

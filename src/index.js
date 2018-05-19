@@ -30,9 +30,9 @@ class Board extends React.Component {
     // Use two loops to make the squares
     const boardSize = 3;
     let squares = [];
-    for(let i=0; i<boardSize; ++i) {
+    for (let i = 0; i < boardSize; ++i) {
       let row = [];
-      for(let j=0; j<boardSize; ++j) {
+      for (let j = 0; j < boardSize; ++j) {
         row.push(this.renderSquare(i * boardSize + j));
       }
       squares.push(<div key={i} className="board-row">{row}</div>);
@@ -122,16 +122,15 @@ class Game extends React.Component {
     if (winner) {
       status = "Winner: " + winner;
     } else {
-      if(winInfo.isDraw) {
+      if (winInfo.isDraw) {
         status = "Draw";
-      }
-      else {
+      } else {
         status = "Next player: " + (this.state.xIsNext ? "X" : "O");
       }
     }
 
     const isAscending = this.state.isAscending;
-    if(!isAscending) {
+    if (!isAscending) {
       moves.reverse();
     }
 
@@ -182,8 +181,8 @@ function calculateWinner(squares) {
   }
 
   let isDraw = true;
-  for(let i = 0; i < squares.length; i++) {
-    if(squares[i] === null) {
+  for (let i = 0; i < squares.length; i++) {
+    if (squares[i] === null) {
       isDraw = false;
       break;
     }
