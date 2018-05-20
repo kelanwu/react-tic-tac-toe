@@ -127,7 +127,7 @@ Each step in the first loop, we create a board row. And each step in the second 
 
 ** Add a toggle button for sorting
 So far, the moves list is displayed in ascending order by default, from game start to the latest step. We need to enable the moves list to be displayed in descending order, from lastest step to game start, and add a toggle button to switch the sorting order. 
-At first, add =isAscending= state representing what order should be displayed to the constructor: 
+At first, add =isAscending= state representing which order should be displayed to the constructor: 
 
 #+BEGIN_SRC js
 class Game extends React.Component {
@@ -142,7 +142,7 @@ class Game extends React.Component {
 }
 #+END_SRC
 
-Add the toggle button in =render= method in =Game=. It will have different content according to the =isAscending= state: 
+Add the toggle button to =render= method in =Game=. It will have different content according to the =isAscending= state: 
 
 #+BEGIN_SRC js
   render() {
@@ -179,7 +179,7 @@ When the toggle button is clicked, =handleSortToggle= will be called. What this 
   }
 #+END_SRC
 
-At last, the moves list should be displayed in the right order corresponding to the =isAscending= state. For ascending, the =moves= is in the right order. For descending, we reverse the =moves= array to have the right order. Note that we also change the definition of =moves= from =const= to =let= because we may change it:
+At last, the moves list should be displayed in the right order corresponding to the =isAscending= state. For ascending, the =moves= is in the right order already. For descending, we reverse the =moves= array to let it be in the right order. Note that we also change the definition of =moves= from =const= to =let= because we may change it:
 
 #+BEGIN_SRC js
   render() {
@@ -202,4 +202,121 @@ At last, the moves list should be displayed in the right order corresponding to 
 #+END_SRC
 
 ** Highlight the squares when someone wins
+Append this stype for highlight square to the =src/index.css= file:
+
+#+BEGIN_SRC css
+.square.highlight {
+  background: #ddd
+}
+#+END_SRC
+
+We have used =calculateWinner= to declare the winner. We can get the three squares or the line that caused the win easily by modifying the return value of this function:
+
+#+BEGIN_SRC js
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return {
+        winner: squares[a],
+        line: lines[i],
+      };
+    }
+  }
+
+  return {
+    winner: null,
+  };
+#+END_SRC
+
+Then change the =handleClick= in =Game= since the return value of =calculateWinner= has been modified:
+
+#+BEGIN_SRC js
+  handleClick(i) {
+    // ...
+    if (calculateWinner(squares).winner || squares[i]) {
+      return;
+    }
+    // ...
+  }
+#+END_SRC
+
+Then also change the =render= in =Game=. And we will pass the =winLine= through props to =Board=:
+
+#+BEGIN_SRC js
+  render() {
+    // ...
+    const winInfo = calculateWinner(current.squares);
+    const winner = winInfo.winner;
+
+    let moves = history.map((step, move) => {
+      // ...
+    });
+
+    let status;
+    if (winner) {
+      status = "Winner: " + winner;
+    } else {
+      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+    }
+
+    // ...
+
+    return (
+      <div className="game">
+        <div className="game-board">
+          <Board
+            squares={current.squares}
+            onClick={i => this.handleClick(i)}
+            winLine={winInfo.line}
+          />
+        </div>
+        // ...
+      </div>
+    );
+  }
+#+END_SRC
+
+Then change the =renderSquare= in =Board=. If the current index of square is included in the =winLine= array, expression ~winLine && winLine.includes(i)~ will be evaluated to =true=, otherwise =false=. This will be passed to =Square= through the =highlight= props:
+
+#+BEGIN_SRC js
+  renderSquare(i) {
+    const winLine = this.props.winLine;
+    return (
+      <Square
+        key={i}
+        value={this.props.squares[i]}
+        onClick={() => this.props.onClick(i)}
+        highlight={winLine && winLine.includes(i)}
+      />
+    );
+  }
+#+END_SRC
+
+Finally, =Square= will apply the css class depending on the =highlight= props:
+
+#+BEGIN_SRC js
+function Square(props) {
+  const className = 'square' + (props.highlight ? ' highlight' : '');
+  return (
+    <button
+      className={className}
+      onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
+}
+#+END_SRC
+
 ** Display draw message
+   
