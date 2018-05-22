@@ -319,4 +319,57 @@ function Square(props) {
 #+END_SRC
 
 ** Display draw message
+If the board is full (no next move can be taken) and there is no winner, we can say that the result is a draw. To get whether the current move results in a draw, we need to revise the =calculateWinner= function: 
+
+#+BEGIN_SRC js
+function calculateWinner(squares) {
+  const lines = [
+    // ...
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return {
+        winner: squares[a],
+        line: lines[i],
+        isDraw: false,
+      };
+    }
+  }
+
+  let isDraw = true;
+  for (let i = 0; i < squares.length; i++) {
+    if (squares[i] === null) {
+      isDraw = false;
+      break;
+    }
+  }
+  return {
+    winner: null,
+    line: null,
+    isDraw: isDraw,
+  };
+}
+#+END_SRC
    
+Now that the result object of the =calculateWinner= function has a new =isDraw= attribute. Then we will change the part for displaying game status of the =render= in =Game=:
+
+#+BEGIN_SRC js
+  render() {
+    // ...
+
+    let status;
+    if (winner) {
+      status = "Winner: " + winner;
+    } else {
+      if (winInfo.isDraw) {
+        status = "Draw";
+      } else {
+        status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+      }
+    }
+    // ...
+  }
+#+END_SRC
+
+We have accomplished all the improvements. Check out the final code in this repository.

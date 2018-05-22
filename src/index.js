@@ -176,6 +176,7 @@ function calculateWinner(squares) {
       return {
         winner: squares[a],
         line: lines[i],
+        isDraw: false,
       };
     }
   }
@@ -189,6 +190,7 @@ function calculateWinner(squares) {
   }
   return {
     winner: null,
+    line: null,
     isDraw: isDraw,
   };
 }
