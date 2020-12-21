@@ -88,9 +88,9 @@ class Game extends React.Component {
   }
 
   handleSortToggle() {
-    this.setState({
-      isAscending: !this.state.isAscending
-    });
+    this.setState(state => ({
+      isAscending: !state.isAscending,
+    }))
   }
 
   render() {

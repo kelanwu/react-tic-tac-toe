@@ -173,9 +173,9 @@ When the toggle button is clicked, =handleSortToggle= will be called. What this 
 
 #+BEGIN_SRC js
   handleSortToggle() {
-    this.setState({
-      isAscending: !this.state.isAscending
-    });
+    this.setState(state => ({
+      isAscending: !state.isAscending,
+    }));
   }
 #+END_SRC
 
